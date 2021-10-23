@@ -34,7 +34,15 @@ const searchData = ({
   const key = keyword.toLocaleLowerCase();
   const tempData = data.filter((item) => {
     const nameCheck = item?.beneficiary_name?.toLocaleLowerCase().includes(key);
-    return nameCheck;
+    const senderCheck = item?.sender_bank?.toLocaleLowerCase().includes(key);
+    const beneficiaryCheck = item?.beneficiary_bank
+      ?.toLocaleLowerCase()
+      .includes(key);
+    const amountCheck = item?.amount
+      ?.toString()
+      .toLocaleLowerCase()
+      .includes(key);
+    return nameCheck || senderCheck || beneficiaryCheck || amountCheck;
   });
   return tempData;
 };
