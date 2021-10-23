@@ -1,4 +1,5 @@
 interface SemiRadioProps {
-  label: string;
+  item: FilterProps;
   isSelected?: boolean;
+  onPress?(arg0: FilterProps): void;
 }

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { TextInput, View } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import { Arrow, Search } from "../../../assets";
@@ -12,20 +12,60 @@ import {
   TransactionTile,
 } from "../../components";
 import { FlyPopUpRef } from "../../components/molecule/FlyPopUp/types";
-import { colors, defaultValue as dv, spacing as sp } from "../../constants";
+import {
+  colors,
+  defaultValue as dv,
+  spacing as sp,
+  strings,
+} from "../../constants";
 import { fetchTransactions } from "../../service";
 import { dummyFilter } from "./dummy";
 import styles from "./styles";
 
 const HORIZONTAL_GAP = sp.xs;
 
+const searchData = ({
+  data,
+  keyword,
+}: {
+  data: TransactionsDataProps[];
+  keyword: string;
+}) => {
+  const key = keyword.toLocaleLowerCase();
+  const tempData = data.filter((item) => {
+    const nameCheck = item?.beneficiary_name?.toLocaleLowerCase().includes(key);
+    return nameCheck;
+  });
+  return tempData;
+};
+
 const Transactions = () => {
   const popRef = useRef<FlyPopUpRef>();
   const isMounted = useRef<boolean>();
 
-  const [transactionsData, setTransactionsData] =
-    useState<TransactionsDataProps[]>();
-  const [selectedFilter, setSelectedFilter] = useState<string>("none");
+  const [keyword, setKeyword] = useState<string>("");
+  const [selectedFilter, setSelectedFilter] = useState<FilterProps>(
+    dummyFilter.find((item) => item.id === "none") || dummyFilter[0]
+  );
+  const [transactionsData, setTransactionsData] = useState<
+    TransactionsDataProps[]
+  >([]);
+
+  const finalTransactions = useMemo(() => {
+    if (keyword?.length < 3 && selectedFilter?.id === "none") {
+      return transactionsData;
+    }
+    searchData({
+      data: [...transactionsData],
+      keyword,
+    });
+    return transactionsData;
+  }, [keyword, selectedFilter, transactionsData]);
+
+  const filterPress = (filter: FilterProps) => {
+    setSelectedFilter(filter);
+    popRef.current?.close();
+  };
 
   const getTransactions = async () => {
     try {
@@ -78,14 +118,15 @@ const Transactions = () => {
           </View>
           <TextInput
             style={{ height: 48, flex: 1 }}
-            placeholder="Cari nama, bank, atau nominal"
+            placeholder={strings.findBy}
+            onChangeText={setKeyword}
           />
           <Gap horizontal={sp.sm} />
           <Button
             style={styles.filterButton}
             onPress={() => popRef.current?.open()}
           >
-            <TextItem type="b.14.primary1.u">urutkan</TextItem>
+            <TextItem type="b.14.primary1">{selectedFilter?.label}</TextItem>
             <Gap horizontal={sp.xs} />
             <Arrow fill={colors.primary1} width={16} height={16} />
           </Button>
@@ -94,11 +135,8 @@ const Transactions = () => {
       </Gap>
       <Gap vertical={sp.xs} />
       <FlatList
-        contentContainerStyle={{
-          marginHorizontal: HORIZONTAL_GAP,
-          paddingBottom: sp.l,
-        }}
-        data={transactionsData}
+        contentContainerStyle={styles.contentContainerStyle}
+        data={finalTransactions}
         keyExtractor={keyExtractor}
         renderItem={renderItem}
         showsVerticalScrollIndicator={false}
@@ -107,8 +145,9 @@ const Transactions = () => {
         {dummyFilter.map((item) => (
           <SemiRadio
             key={`${item.id}`}
-            label={item.label}
-            isSelected={item.id === selectedFilter}
+            item={item}
+            isSelected={item.id === selectedFilter?.id}
+            onPress={filterPress}
           />
         ))}
       </FlyPopUp>

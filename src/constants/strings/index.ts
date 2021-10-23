@@ -1,1 +1,3 @@
-export const strings = {};
+export const strings = {
+  findBy: "Cari nama, bank, atau nominal",
+};

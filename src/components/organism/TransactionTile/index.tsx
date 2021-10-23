@@ -1,10 +1,11 @@
 import React from "react";
 import { View } from "react-native";
-import { Button, TextItem, Gap } from "../../atom";
-import { colors, defaultValue as dv, spacing as sp } from "../../../constants";
 import { ArrowTailed } from "../../../../assets";
-import styles from "./styles";
+import { colors, defaultValue as dv, spacing as sp } from "../../../constants";
 import { currencyFormat } from "../../../helper";
+import { dateFormater } from "../../../helper/dateFormat";
+import { Button, Gap, TextItem } from "../../atom";
+import styles from "./styles";
 
 const bankTextType = (code: string) =>
   code?.length < 5 ? "b.16.text1.u" : "b.16.text1.c";
@@ -20,6 +21,7 @@ const TransactionTile = ({
   const s = styles({ iSsuccess });
   const statusLabel = iSsuccess ? dv.success : dv.checking;
   const statusLabelColor = iSsuccess ? "white" : "text1";
+
   return (
     <Button>
       <View style={s.container}>
@@ -40,11 +42,13 @@ const TransactionTile = ({
               >{` ${beneficiary}`}</TextItem>
             </View>
             <Gap vertical={sp.xxs} />
-            <TextItem type="n.14.text1.u">{name}</TextItem>
+            <TextItem type="n.14.text1.u" numberOfLines={1}>
+              {name}
+            </TextItem>
             <Gap vertical={sp.xxs} />
-            <TextItem type="n.14.text1">{`Rp${currencyFormat(
+            <TextItem type="n.14.text1" numberOfLines={1}>{`Rp${currencyFormat(
               amount
-            )} • ${date}`}</TextItem>
+            )} • ${dateFormater(date)}`}</TextItem>
           </View>
         </View>
         <View style={s.child}>

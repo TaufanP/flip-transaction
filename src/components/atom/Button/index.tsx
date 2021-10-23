@@ -8,7 +8,7 @@ const Button = ({
   onPress,
 }: PropsWithChildren<ButtonProps>) => {
   return (
-    <TouchableOpacity activeOpacity={0.75} style={style} onPress={onPress}>
+    <TouchableOpacity activeOpacity={0.8} style={style} onPress={onPress}>
       {children}
     </TouchableOpacity>
   );

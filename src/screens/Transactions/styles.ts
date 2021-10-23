@@ -1,9 +1,15 @@
 import { StyleSheet } from "react-native";
-import { colors } from "../../constants";
+import { colors, spacing as sp } from "../../constants";
 
 const BOX_HEIGHT = 48;
+const HORIZONTAL_GAP = sp.xs;
 
 const styles = StyleSheet.create({
+  contentContainerStyle: {
+    marginHorizontal: HORIZONTAL_GAP,
+    paddingBottom: sp.l,
+  },
+
   filterButton: {
     height: BOX_HEIGHT,
     flexDirection: "row",

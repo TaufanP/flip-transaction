@@ -12,3 +12,8 @@ interface TransactionsDataProps {
   completed_at: string;
   fee: number;
 }
+
+interface FilterProps {
+  id: string;
+  label: string;
+}
