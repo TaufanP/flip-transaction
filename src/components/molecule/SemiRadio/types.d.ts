@@ -1,0 +1,3 @@
+interface SemiRadioProps {
+  label: string;
+}
