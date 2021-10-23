@@ -55,11 +55,11 @@ const Transactions = () => {
     if (keyword?.length < 3 && selectedFilter?.id === "none") {
       return transactionsData;
     }
-    searchData({
+    const searchedData = searchData({
       data: [...transactionsData],
       keyword,
     });
-    return transactionsData;
+    return searchedData;
   }, [keyword, selectedFilter, transactionsData]);
 
   const filterPress = (filter: FilterProps) => {
