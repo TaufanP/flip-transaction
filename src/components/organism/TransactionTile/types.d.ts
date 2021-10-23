@@ -4,5 +4,5 @@ interface TransactionTileProps {
   name: string;
   amount: number;
   date: string;
-  status: string;
+  iSsuccess: boolean;
 }
