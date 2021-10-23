@@ -18,34 +18,12 @@ import {
   spacing as sp,
   strings,
 } from "../../constants";
+import { filterTransactions, searchTransactions } from "../../helper";
 import { fetchTransactions } from "../../service";
 import { dummyFilter } from "./dummy";
 import styles from "./styles";
 
 const HORIZONTAL_GAP = sp.xs;
-
-const searchData = ({
-  data,
-  keyword,
-}: {
-  data: TransactionsDataProps[];
-  keyword: string;
-}) => {
-  const key = keyword.toLocaleLowerCase();
-  const tempData = data.filter((item) => {
-    const nameCheck = item?.beneficiary_name?.toLocaleLowerCase().includes(key);
-    const senderCheck = item?.sender_bank?.toLocaleLowerCase().includes(key);
-    const beneficiaryCheck = item?.beneficiary_bank
-      ?.toLocaleLowerCase()
-      .includes(key);
-    const amountCheck = item?.amount
-      ?.toString()
-      .toLocaleLowerCase()
-      .includes(key);
-    return nameCheck || senderCheck || beneficiaryCheck || amountCheck;
-  });
-  return tempData;
-};
 
 const Transactions = () => {
   const popRef = useRef<FlyPopUpRef>();
@@ -53,21 +31,25 @@ const Transactions = () => {
 
   const [keyword, setKeyword] = useState<string>("");
   const [selectedFilter, setSelectedFilter] = useState<FilterProps>(
-    dummyFilter.find((item) => item.id === "none") || dummyFilter[0]
+    dummyFilter.find((item) => item.id === dv.filterType.none) || dummyFilter[0]
   );
   const [transactionsData, setTransactionsData] = useState<
     TransactionsDataProps[]
   >([]);
 
   const finalTransactions = useMemo(() => {
-    if (keyword?.length < 3 && selectedFilter?.id === "none") {
+    if (keyword?.length === 0 && selectedFilter?.id === dv.filterType.none) {
       return transactionsData;
     }
-    const searchedData = searchData({
+    const searchedData = searchTransactions({
       data: [...transactionsData],
       keyword,
     });
-    return searchedData;
+    const filteredData = filterTransactions({
+      data: searchedData,
+      filter: selectedFilter.id,
+    });
+    return filteredData;
   }, [keyword, selectedFilter, transactionsData]);
 
   const filterPress = (filter: FilterProps) => {

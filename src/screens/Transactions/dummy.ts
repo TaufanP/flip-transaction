@@ -1,22 +1,26 @@
+import { defaultValue as dv } from "../../constants";
+
+const ft = dv.filterType;
+
 const dummyFilter = [
   {
-    id: "none",
+    id: ft.none,
     label: "URUTKAN",
   },
   {
-    id: "nameAsc",
+    id: ft.nameAsc,
     label: "Nama A-Z",
   },
   {
-    id: "nameDsc",
+    id: ft.nameDsc,
     label: "Nama Z-A",
   },
   {
-    id: "dateAsc",
+    id: ft.newest,
     label: "Tanggal Terbaru",
   },
   {
-    id: "dateDsc",
+    id: ft.oldest,
     label: "Tanggal Terlama",
   },
 ];

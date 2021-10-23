@@ -5,4 +5,11 @@ export const defaultValue = {
   },
   success: "berhasil",
   checking: "pengecekan",
+  filterType: {
+    none: "none",
+    nameAsc: "nameAsc",
+    nameDsc: "nameDsc",
+    newest: "newest",
+    oldest: "oldest",
+  },
 };
