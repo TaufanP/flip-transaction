@@ -18,9 +18,9 @@ import {
   spacing as sp,
   strings,
 } from "../../constants";
-import { filterTransactions, searchTransactions } from "../../helper";
+import { sortTransactions, searchTransactions } from "../../helper";
 import { fetchTransactions } from "../../service";
-import { dummyFilter } from "./dummy";
+import { dummySorts } from "./dummy";
 import styles from "./styles";
 
 const HORIZONTAL_GAP = sp.xs;
@@ -30,30 +30,30 @@ const Transactions = () => {
   const isMounted = useRef<boolean>();
 
   const [keyword, setKeyword] = useState<string>("");
-  const [selectedFilter, setSelectedFilter] = useState<FilterProps>(
-    dummyFilter.find((item) => item.id === dv.filterType.none) || dummyFilter[0]
+  const [selectedSort, setSelectedSort] = useState<SortProps>(
+    dummySorts.find((item) => item.id === dv.sortType.none) || dummySorts[0]
   );
   const [transactionsData, setTransactionsData] = useState<
     TransactionsDataProps[]
   >([]);
 
   const finalTransactions = useMemo(() => {
-    if (keyword?.length === 0 && selectedFilter?.id === dv.filterType.none) {
+    if (keyword?.length === 0 && selectedSort?.id === dv.sortType.none) {
       return transactionsData;
     }
     const searchedData = searchTransactions({
       data: [...transactionsData],
       keyword,
     });
-    const filteredData = filterTransactions({
+    const sortedData = sortTransactions({
       data: searchedData,
-      filter: selectedFilter.id,
+      sortBy: selectedSort.id,
     });
-    return filteredData;
-  }, [keyword, selectedFilter, transactionsData]);
+    return sortedData;
+  }, [keyword, selectedSort, transactionsData]);
 
-  const filterPress = (filter: FilterProps) => {
-    setSelectedFilter(filter);
+  const sortPress = (sort: SortProps) => {
+    setSelectedSort(sort);
     popRef.current?.close();
   };
 
@@ -113,10 +113,10 @@ const Transactions = () => {
           />
           <Gap horizontal={sp.sm} />
           <Button
-            style={styles.filterButton}
+            style={styles.sortButton}
             onPress={() => popRef.current?.open()}
           >
-            <TextItem type="b.14.primary1">{selectedFilter?.label}</TextItem>
+            <TextItem type="b.14.primary1">{selectedSort?.label}</TextItem>
             <Gap horizontal={sp.xs} />
             <Arrow fill={colors.primary1} width={16} height={16} />
           </Button>
@@ -132,12 +132,12 @@ const Transactions = () => {
         showsVerticalScrollIndicator={false}
       />
       <FlyPopUp ref={popRef}>
-        {dummyFilter.map((item) => (
+        {dummySorts.map((item) => (
           <SemiRadio
             key={`${item.id}`}
             item={item}
-            isSelected={item.id === selectedFilter?.id}
-            onPress={filterPress}
+            isSelected={item.id === selectedSort?.id}
+            onPress={sortPress}
           />
         ))}
       </FlyPopUp>

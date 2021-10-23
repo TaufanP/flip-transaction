@@ -13,7 +13,7 @@ interface TransactionsDataProps {
   fee: number;
 }
 
-interface FilterProps {
+interface SortProps {
   id: string;
   label: string;
 }

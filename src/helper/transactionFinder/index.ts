@@ -1,18 +1,18 @@
 import { defaultValue as dv } from "../../constants";
 
-const filterTransactions = ({
+const sortTransactions = ({
   data,
-  filter,
+  sortBy,
 }: {
   data: TransactionsDataProps[];
-  filter: string;
+  sortBy: string;
 }) => {
-  const { none, nameAsc, nameDsc, newest, oldest } = dv.filterType;
+  const { none, nameAsc, nameDsc, newest, oldest } = dv.sortType;
 
-  if (filter === none) {
+  if (sortBy === none) {
     return data;
   }
-  switch (filter) {
+  switch (sortBy) {
     case nameAsc:
       return data.sort((a: TransactionsDataProps, b: TransactionsDataProps) => {
         const prevName = a.beneficiary_name?.toLocaleLowerCase();
@@ -75,4 +75,4 @@ const timestampConverter = (transaction: TransactionsDataProps) =>
       : transaction.created_at
   ).getTime();
 
-export { searchTransactions, filterTransactions };
+export { searchTransactions, sortTransactions };

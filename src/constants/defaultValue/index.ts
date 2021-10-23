@@ -5,7 +5,7 @@ export const defaultValue = {
   },
   success: "berhasil",
   checking: "pengecekan",
-  filterType: {
+  sortType: {
     none: "none",
     nameAsc: "nameAsc",
     nameDsc: "nameDsc",

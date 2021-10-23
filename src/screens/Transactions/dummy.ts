@@ -1,28 +1,28 @@
 import { defaultValue as dv } from "../../constants";
 
-const ft = dv.filterType;
+const { none, nameAsc, nameDsc, oldest, newest } = dv.sortType;
 
-const dummyFilter = [
+const dummySorts = [
   {
-    id: ft.none,
+    id: none,
     label: "URUTKAN",
   },
   {
-    id: ft.nameAsc,
+    id: nameAsc,
     label: "Nama A-Z",
   },
   {
-    id: ft.nameDsc,
+    id: nameDsc,
     label: "Nama Z-A",
   },
   {
-    id: ft.newest,
+    id: newest,
     label: "Tanggal Terbaru",
   },
   {
-    id: ft.oldest,
+    id: oldest,
     label: "Tanggal Terlama",
   },
 ];
 
-export { dummyFilter };
+export { dummySorts };

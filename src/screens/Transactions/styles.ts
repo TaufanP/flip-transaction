@@ -10,13 +10,6 @@ const styles = StyleSheet.create({
     paddingBottom: sp.l,
   },
 
-  filterButton: {
-    height: BOX_HEIGHT,
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-
   searchBox: {
     width: "100%",
     height: BOX_HEIGHT,
@@ -28,6 +21,12 @@ const styles = StyleSheet.create({
   searchIcon: {
     width: BOX_HEIGHT,
     height: BOX_HEIGHT,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  sortButton: {
+    height: BOX_HEIGHT,
+    flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
   },
