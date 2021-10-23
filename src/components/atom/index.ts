@@ -1,3 +1,6 @@
+import Button from "./Button";
 import Container from "./Container";
+import Gap from "./Gap";
+import TextItem from "./TextItem";
 
-export { Container };
+export { Button, Container, Gap, TextItem };
