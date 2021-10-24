@@ -2,6 +2,7 @@ import { CompositeNavigationProp } from "@react-navigation/core";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { TextInput, View } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
+import SkeletonContent from "react-native-skeleton-content-nonexpo";
 import { Arrow, Search } from "../../../assets";
 import {
   Button,
@@ -16,6 +17,7 @@ import { FlyPopUpRef } from "../../components/molecule/FlyPopUp/types";
 import {
   colors,
   defaultValue as dv,
+  layout,
   pages,
   spacing as sp,
   strings,
@@ -35,6 +37,9 @@ const Transactions = ({ navigation }: TransactionsProps) => {
   const popRef = useRef<FlyPopUpRef>();
   const isMounted = useRef<boolean>();
 
+  const [errorMsg, setErrorMsg] = useState<string>(strings.dataNotAvailable);
+  const [isError, setIsError] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [keyword, setKeyword] = useState<string>("");
   const [selectedSort, setSelectedSort] = useState<SortProps>(
     dummySorts.find((item) => item.id === dv.sortType.none) || dummySorts[0]
@@ -59,6 +64,8 @@ const Transactions = ({ navigation }: TransactionsProps) => {
   }, [keyword, selectedSort, transactionsData]);
 
   const getTransactions = async () => {
+    setIsLoading(true);
+    setIsError(false);
     try {
       const { data } = await fetchTransactions();
       if (!isMounted.current) {
@@ -66,11 +73,22 @@ const Transactions = ({ navigation }: TransactionsProps) => {
       }
       setTransactionsData(data);
     } catch (error) {
-      console.log(error);
+      setIsError(true);
+      //@ts-ignore
+      setErrorMsg(error?.message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const keyExtractor = ({ id }: TransactionsDataProps) => `${id}`;
+
+  const ListEmptyComponent = (
+    <View style={styles.empty}>
+      <TextItem type="b.16.text1.c">{strings.dataNotFound}</TextItem>
+      <TextItem type="n.14.text1">{strings.anotherKey}</TextItem>
+    </View>
+  );
 
   const onTransactionPress = (id: string) => {
     const transaction = transactionsData.find((item) => item?.id === id);
@@ -100,6 +118,8 @@ const Transactions = ({ navigation }: TransactionsProps) => {
     </View>
   );
 
+  const showSort = () => popRef.current?.open();
+
   const sortPress = (sort: SortProps) => {
     setSelectedSort(sort);
     popRef.current?.close();
@@ -114,39 +134,54 @@ const Transactions = ({ navigation }: TransactionsProps) => {
     };
   }, []);
 
+  if (isError) {
+    return (
+      <Container>
+        <View style={styles.empty}>
+          <TextItem type="b.16.text1.c">{strings.wentWrong}</TextItem>
+          <TextItem type="n.14.text1">{errorMsg}</TextItem>
+        </View>
+      </Container>
+    );
+  }
+
   return (
     <Container>
       <Gap vertical={sp.xs} />
-      <Gap horizontal={HORIZONTAL_GAP * 2}>
-        <View style={styles.searchBox}>
-          <View style={styles.searchIcon}>
-            <Search fill={colors.text2} width={20} height={20} />
+      <SkeletonContent
+        containerStyle={styles.flex}
+        isLoading={isLoading}
+        layout={layout.transactions}
+      >
+        <Gap horizontal={HORIZONTAL_GAP * 2}>
+          <View style={styles.searchBox}>
+            <View style={styles.searchIcon}>
+              <Search fill={colors.text2} width={20} height={20} />
+            </View>
+            <TextInput
+              style={styles.input}
+              placeholder={strings.findBy}
+              onChangeText={setKeyword}
+            />
+            <Gap horizontal={sp.sm} />
+            <Button style={styles.sortButton} onPress={showSort}>
+              <TextItem type="b.14.primary1">{selectedSort?.label}</TextItem>
+              <Gap horizontal={sp.xs} />
+              <Arrow fill={colors.primary1} width={16} height={16} />
+            </Button>
+            <Gap horizontal={sp.sm} />
           </View>
-          <TextInput
-            style={{ height: 48, flex: 1 }}
-            placeholder={strings.findBy}
-            onChangeText={setKeyword}
-          />
-          <Gap horizontal={sp.sm} />
-          <Button
-            style={styles.sortButton}
-            onPress={() => popRef.current?.open()}
-          >
-            <TextItem type="b.14.primary1">{selectedSort?.label}</TextItem>
-            <Gap horizontal={sp.xs} />
-            <Arrow fill={colors.primary1} width={16} height={16} />
-          </Button>
-          <Gap horizontal={sp.sm} />
-        </View>
-      </Gap>
-      <Gap vertical={sp.xs} />
-      <FlatList
-        contentContainerStyle={styles.contentContainerStyle}
-        data={finalTransactions}
-        keyExtractor={keyExtractor}
-        renderItem={renderItem}
-        showsVerticalScrollIndicator={false}
-      />
+        </Gap>
+        <Gap vertical={sp.xs} />
+        <FlatList
+          contentContainerStyle={styles.contentContainerStyle}
+          data={finalTransactions}
+          keyExtractor={keyExtractor}
+          renderItem={renderItem}
+          showsVerticalScrollIndicator={false}
+          ListEmptyComponent={ListEmptyComponent}
+        />
+      </SkeletonContent>
       <FlyPopUp ref={popRef}>
         {dummySorts.map((item) => (
           <SemiRadio

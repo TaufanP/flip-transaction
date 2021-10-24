@@ -1,6 +1,5 @@
 import { StyleSheet } from "react-native";
 import { colors, spacing as sp } from "../../../constants";
-import { heightPercent, widthPercent } from "../../../helper";
 
 const OUTER_SIZE = 16;
 const INNER_SIZE = OUTER_SIZE - 8;

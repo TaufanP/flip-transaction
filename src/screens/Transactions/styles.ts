@@ -1,5 +1,6 @@
 import { StyleSheet } from "react-native";
 import { colors, spacing as sp } from "../../constants";
+import { widthPercent, winHeightPercent } from "../../helper";
 
 const BOX_HEIGHT = 48;
 const HORIZONTAL_GAP = sp.xs;
@@ -9,6 +10,18 @@ const styles = StyleSheet.create({
     marginHorizontal: HORIZONTAL_GAP,
     paddingBottom: sp.l,
   },
+
+  empty: {
+    flex: 1,
+    height: winHeightPercent(80) - 48 - 8,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: widthPercent(10),
+  },
+
+  flex: { flex: 1 },
+
+  input: { height: BOX_HEIGHT, flex: 1 },
 
   searchBox: {
     width: "100%",
