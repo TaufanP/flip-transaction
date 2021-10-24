@@ -1,3 +1,4 @@
+import TransactionDetail from "./TransactionDetail";
 import Transactions from "./Transactions";
 
-export { Transactions };
+export { TransactionDetail, Transactions };

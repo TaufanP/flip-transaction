@@ -1,1 +1,4 @@
-export const pages = { Transactions: "Transactions" };
+export const pages = {
+  TransactionDetail: "TransactionDetail",
+  Transactions: "Transactions",
+};
