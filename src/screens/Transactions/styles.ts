@@ -10,6 +10,8 @@ const styles = StyleSheet.create({
     paddingBottom: sp.l,
   },
 
+  flex: { flex: 1 },
+
   searchBox: {
     width: "100%",
     height: BOX_HEIGHT,

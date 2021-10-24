@@ -16,14 +16,20 @@ import { FlyPopUpRef } from "../../components/molecule/FlyPopUp/types";
 import {
   colors,
   defaultValue as dv,
+  layout,
   pages,
   spacing as sp,
   strings,
 } from "../../constants";
-import { searchTransactions, sortTransactions } from "../../helper";
+import {
+  searchTransactions,
+  sortTransactions,
+  widthPercent,
+} from "../../helper";
 import { fetchTransactions } from "../../service";
 import { dummySorts } from "./dummy";
 import styles from "./styles";
+import SkeletonContent from "react-native-skeleton-content-nonexpo";
 
 interface TransactionsProps {
   navigation: CompositeNavigationProp<any, any>;
@@ -35,6 +41,7 @@ const Transactions = ({ navigation }: TransactionsProps) => {
   const popRef = useRef<FlyPopUpRef>();
   const isMounted = useRef<boolean>();
 
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [keyword, setKeyword] = useState<string>("");
   const [selectedSort, setSelectedSort] = useState<SortProps>(
     dummySorts.find((item) => item.id === dv.sortType.none) || dummySorts[0]
@@ -59,6 +66,7 @@ const Transactions = ({ navigation }: TransactionsProps) => {
   }, [keyword, selectedSort, transactionsData]);
 
   const getTransactions = async () => {
+    setIsLoading(true);
     try {
       const { data } = await fetchTransactions();
       if (!isMounted.current) {
@@ -67,6 +75,8 @@ const Transactions = ({ navigation }: TransactionsProps) => {
       setTransactionsData(data);
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -117,36 +127,42 @@ const Transactions = ({ navigation }: TransactionsProps) => {
   return (
     <Container>
       <Gap vertical={sp.xs} />
-      <Gap horizontal={HORIZONTAL_GAP * 2}>
-        <View style={styles.searchBox}>
-          <View style={styles.searchIcon}>
-            <Search fill={colors.text2} width={20} height={20} />
+      <SkeletonContent
+        containerStyle={styles.flex}
+        isLoading={isLoading}
+        layout={layout.transactions}
+      >
+        <Gap horizontal={HORIZONTAL_GAP * 2}>
+          <View style={styles.searchBox}>
+            <View style={styles.searchIcon}>
+              <Search fill={colors.text2} width={20} height={20} />
+            </View>
+            <TextInput
+              style={{ height: 48, flex: 1 }}
+              placeholder={strings.findBy}
+              onChangeText={setKeyword}
+            />
+            <Gap horizontal={sp.sm} />
+            <Button
+              style={styles.sortButton}
+              onPress={() => popRef.current?.open()}
+            >
+              <TextItem type="b.14.primary1">{selectedSort?.label}</TextItem>
+              <Gap horizontal={sp.xs} />
+              <Arrow fill={colors.primary1} width={16} height={16} />
+            </Button>
+            <Gap horizontal={sp.sm} />
           </View>
-          <TextInput
-            style={{ height: 48, flex: 1 }}
-            placeholder={strings.findBy}
-            onChangeText={setKeyword}
-          />
-          <Gap horizontal={sp.sm} />
-          <Button
-            style={styles.sortButton}
-            onPress={() => popRef.current?.open()}
-          >
-            <TextItem type="b.14.primary1">{selectedSort?.label}</TextItem>
-            <Gap horizontal={sp.xs} />
-            <Arrow fill={colors.primary1} width={16} height={16} />
-          </Button>
-          <Gap horizontal={sp.sm} />
-        </View>
-      </Gap>
-      <Gap vertical={sp.xs} />
-      <FlatList
-        contentContainerStyle={styles.contentContainerStyle}
-        data={finalTransactions}
-        keyExtractor={keyExtractor}
-        renderItem={renderItem}
-        showsVerticalScrollIndicator={false}
-      />
+        </Gap>
+        <Gap vertical={sp.xs} />
+        <FlatList
+          contentContainerStyle={styles.contentContainerStyle}
+          data={finalTransactions}
+          keyExtractor={keyExtractor}
+          renderItem={renderItem}
+          showsVerticalScrollIndicator={false}
+        />
+      </SkeletonContent>
       <FlyPopUp ref={popRef}>
         {dummySorts.map((item) => (
           <SemiRadio
