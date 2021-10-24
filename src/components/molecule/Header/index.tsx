@@ -4,7 +4,7 @@ import { Button, Gap, TextItem } from "../../atom";
 import { Arrow } from "../../../../assets";
 import { colors, spacing as sp } from "../../../constants";
 
-const Header = ({ onPress }: HeaderProps) => {
+const Header = ({ onPress, label }: HeaderProps) => {
   return (
     <View
       style={{
@@ -33,7 +33,7 @@ const Header = ({ onPress }: HeaderProps) => {
         />
       </Button>
       <Gap horizontal={sp.xs} />
-      <TextItem type="b.16.text1">Detail</TextItem>
+      <TextItem type="b.16.text1">{label}</TextItem>
     </View>
   );
 };

@@ -7,4 +7,5 @@ interface TransactionTileProps {
   iSsuccess: boolean;
   onPress(id: string): void;
   id: string;
+  index: number;
 }

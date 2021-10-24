@@ -27,14 +27,14 @@ const sortTransactions = ({
       });
     case newest:
       return data.sort((a: TransactionsDataProps, b: TransactionsDataProps) => {
-        const prevTime = timestampConverter(a);
-        const nextTime = timestampConverter(b);
+        const prevTime = timestampConverter(a.created_at);
+        const nextTime = timestampConverter(b.created_at);
         return prevTime < nextTime ? 1 : -1;
       });
     case oldest:
       return data.sort((a: TransactionsDataProps, b: TransactionsDataProps) => {
-        const prevTime = timestampConverter(a);
-        const nextTime = timestampConverter(b);
+        const prevTime = timestampConverter(a.created_at);
+        const nextTime = timestampConverter(b.created_at);
         return prevTime < nextTime ? -1 : 1;
       });
     default:
@@ -68,11 +68,6 @@ const searchTransactions = ({
   return tempData;
 };
 
-const timestampConverter = (transaction: TransactionsDataProps) =>
-  new Date(
-    transaction.status === dv.transactionStatus.SUCCESS
-      ? transaction.completed_at
-      : transaction.created_at
-  ).getTime();
+const timestampConverter = (date: string) => new Date(date).getTime();
 
 export { searchTransactions, sortTransactions };

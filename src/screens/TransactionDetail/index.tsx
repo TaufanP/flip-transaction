@@ -3,13 +3,16 @@ import {
   RouteProp,
   useRoute,
 } from "@react-navigation/core";
-import React from "react";
+import React, { useRef } from "react";
 import { View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import { Arrow, ArrowTailed } from "../../../assets";
+import { ArrowTailed } from "../../../assets";
 import { Button, Container, Gap, Header, TextItem } from "../../components";
-import { colors, pages, spacing as sp } from "../../constants";
+import { colors, spacing as sp } from "../../constants";
+import { currencyFormat } from "../../helper";
+import { dateFormater } from "../../helper/dateFormat";
 import { StackParamsList } from "../../types/screens";
+import styles from "./styles";
 
 interface TransactionDetailProps {
   navigation: CompositeNavigationProp<any, any>;
@@ -17,88 +20,76 @@ interface TransactionDetailProps {
 
 const TransactionDetail = ({ navigation }: TransactionDetailProps) => {
   const route = useRoute<RouteProp<StackParamsList, "TRANSACTION_DETAIL">>();
-  const id = route.params?.id;
+  const isMounted = useRef<boolean>();
+
+  const {
+    beneficiary_bank,
+    sender_bank,
+    id,
+    beneficiary_name,
+    account_number,
+    amount,
+    unique_code,
+    remark,
+    status,
+    created_at,
+  } = route.params;
+
   return (
     <Container>
-      <Header label={"Detail"} onPress={() => navigation.goBack()} />
+      <Header label={"Rincian Transaksi"} onPress={() => navigation.goBack()} />
       <ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{
-          paddingTop: sp.xs,
-          paddingBottom: sp.l,
-        }}
+        contentContainerStyle={styles.contentContainerStyle}
       >
-        <View
-          style={{
-            paddingVertical: sp.sm,
-            paddingHorizontal: sp.m,
-            flexDirection: "row",
-            alignItems: "center",
-            backgroundColor: colors.white,
-          }}
-        >
+        <View style={[styles.box, styles.container]}>
           <TextItem type="b.16.text1.u">{`ID TRANSAKSI: #${id}`}</TextItem>
         </View>
         <Gap vertical={sp.xxs} />
-        <View
-          style={{
-            paddingVertical: sp.sm,
-            paddingHorizontal: sp.m,
-            flexDirection: "row",
-            alignItems: "center",
-            backgroundColor: colors.white,
-            justifyContent: "space-between",
-          }}
-        >
+        <View style={[styles.box, styles.container, styles.space]}>
           <TextItem type="b.16.text1.u">detail transaksi </TextItem>
           <Button>
             <TextItem type="n.14.primary1.c">tutup</TextItem>
           </Button>
         </View>
         <Gap vertical={sp.xxs} />
-        <View
-          style={{
-            paddingVertical: sp.sm,
-            paddingHorizontal: sp.m,
-            backgroundColor: colors.white,
-          }}
-        >
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <TextItem type={"b.16.text1.u"}>bni</TextItem>
+        <View style={styles.box}>
+          <View style={styles.rowCenter}>
+            <TextItem type={"b.16.text1.u"}>{sender_bank}</TextItem>
             <ArrowTailed
               fill={colors.text1}
               width={12}
               height={12}
-              style={{ transform: [{ rotate: "180deg" }] }}
+              style={styles.tailedArrow}
             />
-            <TextItem type={"b.16.text1.u"}>bri</TextItem>
+            <TextItem type={"b.16.text1.u"}>{beneficiary_bank}</TextItem>
           </View>
 
           <Gap vertical={sp.sm} />
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <View style={{ flex: 1.75 }}>
-              <TextItem type="b.14.text1.u">syif salsabila</TextItem>
-              <TextItem type="n.14.text1">0412313209</TextItem>
+          <View style={styles.rowCenter}>
+            <View style={styles.mainFlex}>
+              <TextItem type="b.14.text1.u">{beneficiary_name}</TextItem>
+              <TextItem type="n.14.text1">{account_number}</TextItem>
             </View>
-            <View style={{ flex: 1 }}>
+            <View style={styles.childFlex}>
               <TextItem type="b.14.text1.u">nominal</TextItem>
-              <TextItem type="n.14.text1">Rp10.028</TextItem>
+              <TextItem type="n.14.text1">Rp{currencyFormat(amount)}</TextItem>
             </View>
           </View>
           <Gap vertical={sp.sm} />
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <View style={{ flex: 1.75 }}>
+          <View style={styles.rowCenter}>
+            <View style={styles.mainFlex}>
               <TextItem type="b.14.text1.u">berita transfer</TextItem>
-              <TextItem type="n.14.text1">coba mbanking yey</TextItem>
+              <TextItem type="n.14.text1">{remark}</TextItem>
             </View>
-            <View style={{ flex: 1 }}>
+            <View style={styles.childFlex}>
               <TextItem type="b.14.text1.u">kode unik</TextItem>
-              <TextItem type="n.14.text1">50</TextItem>
+              <TextItem type="n.14.text1">{unique_code}</TextItem>
             </View>
           </View>
           <Gap vertical={sp.sm} />
           <TextItem type="b.14.text1.u">waktu dibuat</TextItem>
-          <TextItem type="n.14.text1">8 April 2021</TextItem>
+          <TextItem type="n.14.text1">{dateFormater(created_at)}</TextItem>
         </View>
       </ScrollView>
     </Container>

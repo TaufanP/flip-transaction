@@ -6,7 +6,7 @@ import { Arrow, Search } from "../../../assets";
 import {
   Button,
   Container,
-  // FlyPopUp,
+  FlyPopUp,
   Gap,
   SemiRadio,
   TextItem,
@@ -73,10 +73,17 @@ const Transactions = ({ navigation }: TransactionsProps) => {
   const keyExtractor = ({ id }: TransactionsDataProps) => `${id}`;
 
   const onTransactionPress = (id: string) => {
-    navigation.navigate(pages.TransactionDetail, { id });
+    const transaction = transactionsData.find((item) => item?.id === id);
+    navigation.navigate(pages.TransactionDetail, { ...transaction });
   };
 
-  const renderItem = ({ item }: { item: TransactionsDataProps }) => (
+  const renderItem = ({
+    item,
+    index,
+  }: {
+    item: TransactionsDataProps;
+    index: number;
+  }) => (
     <View>
       <TransactionTile
         onPress={onTransactionPress}
@@ -86,11 +93,8 @@ const Transactions = ({ navigation }: TransactionsProps) => {
         name={item?.beneficiary_name}
         sender={item?.sender_bank}
         iSsuccess={item?.status === dv.transactionStatus.SUCCESS}
-        date={
-          item?.status === dv.transactionStatus.SUCCESS
-            ? item?.completed_at
-            : item?.created_at
-        }
+        date={item?.created_at}
+        index={index}
       />
       <Gap vertical={sp.xs} />
     </View>
@@ -143,7 +147,7 @@ const Transactions = ({ navigation }: TransactionsProps) => {
         renderItem={renderItem}
         showsVerticalScrollIndicator={false}
       />
-      {/* <FlyPopUp ref={popRef}>
+      <FlyPopUp ref={popRef}>
         {dummySorts.map((item) => (
           <SemiRadio
             key={`${item.id}`}
@@ -152,7 +156,7 @@ const Transactions = ({ navigation }: TransactionsProps) => {
             onPress={sortPress}
           />
         ))}
-      </FlyPopUp> */}
+      </FlyPopUp>
     </Container>
   );
 };

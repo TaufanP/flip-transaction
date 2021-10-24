@@ -1,14 +1,17 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { View } from "react-native";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withDelay,
+  withTiming,
+} from "react-native-reanimated";
 import { ArrowTailed } from "../../../../assets";
 import { colors, defaultValue as dv, spacing as sp } from "../../../constants";
-import { currencyFormat } from "../../../helper";
+import { bankTextType, currencyFormat } from "../../../helper";
 import { dateFormater } from "../../../helper/dateFormat";
 import { Button, Gap, TextItem } from "../../atom";
 import styles from "./styles";
-
-const bankTextType = (code: string) =>
-  code?.length < 5 ? "b.16.text1.u" : "b.16.text1.c";
 
 const TransactionTile = ({
   sender = "",
@@ -19,14 +22,26 @@ const TransactionTile = ({
   iSsuccess,
   onPress,
   id,
+  index,
 }: TransactionTileProps) => {
   const s = styles({ iSsuccess });
   const statusLabel = iSsuccess ? dv.success : dv.checking;
   const statusLabelColor = iSsuccess ? "white" : "text1";
 
+  const top = useSharedValue(48);
+  const containerStyle = useAnimatedStyle(() => ({ top: top.value }));
+
+  const animate = () => {
+    top.value = withDelay(index * 100, withTiming(0));
+  };
+
+  useEffect(() => {
+    animate();
+  }, []);
+
   return (
     <Button onPress={() => onPress(id)}>
-      <View style={s.container}>
+      <Animated.View style={[s.container, containerStyle]}>
         <View style={s.child}>
           <View style={s.indicator}></View>
           <Gap horizontal={sp.sm} />
@@ -61,7 +76,7 @@ const TransactionTile = ({
           </Button>
           <Gap horizontal={sp.sm} />
         </View>
-      </View>
+      </Animated.View>
     </Button>
   );
 };
