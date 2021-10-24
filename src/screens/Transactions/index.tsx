@@ -25,6 +25,7 @@ import {
   searchTransactions,
   sortTransactions,
   widthPercent,
+  winHeightPercent,
 } from "../../helper";
 import { fetchTransactions } from "../../service";
 import { dummySorts } from "./dummy";
@@ -41,6 +42,8 @@ const Transactions = ({ navigation }: TransactionsProps) => {
   const popRef = useRef<FlyPopUpRef>();
   const isMounted = useRef<boolean>();
 
+  const [isError, setIsError] = useState<boolean>(false);
+  const [errorMsg, setErrorMsg] = useState<string>("Data tidak tersedia");
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [keyword, setKeyword] = useState<string>("");
   const [selectedSort, setSelectedSort] = useState<SortProps>(
@@ -67,6 +70,7 @@ const Transactions = ({ navigation }: TransactionsProps) => {
 
   const getTransactions = async () => {
     setIsLoading(true);
+    setIsError(false);
     try {
       const { data } = await fetchTransactions();
       if (!isMounted.current) {
@@ -74,13 +78,22 @@ const Transactions = ({ navigation }: TransactionsProps) => {
       }
       setTransactionsData(data);
     } catch (error) {
-      console.log(error);
+      setIsError(true);
+      //@ts-ignore
+      setErrorMsg(error?.message);
     } finally {
       setIsLoading(false);
     }
   };
 
   const keyExtractor = ({ id }: TransactionsDataProps) => `${id}`;
+
+  const ListEmptyComponent = (
+    <View style={styles.empty}>
+      <TextItem type="b.16.text1.c">Data tidak ditemukan</TextItem>
+      <TextItem type="n.14.text1">Kamu bisa coba kata kunci lain</TextItem>
+    </View>
+  );
 
   const onTransactionPress = (id: string) => {
     const transaction = transactionsData.find((item) => item?.id === id);
@@ -124,6 +137,17 @@ const Transactions = ({ navigation }: TransactionsProps) => {
     };
   }, []);
 
+  if (isError) {
+    return (
+      <Container>
+        <View style={styles.empty}>
+          <TextItem type="b.16.text1.c">Terjadi kesalahan</TextItem>
+          <TextItem type="n.14.text1">{errorMsg}</TextItem>
+        </View>
+      </Container>
+    );
+  }
+
   return (
     <Container>
       <Gap vertical={sp.xs} />
@@ -161,6 +185,7 @@ const Transactions = ({ navigation }: TransactionsProps) => {
           keyExtractor={keyExtractor}
           renderItem={renderItem}
           showsVerticalScrollIndicator={false}
+          ListEmptyComponent={ListEmptyComponent}
         />
       </SkeletonContent>
       <FlyPopUp ref={popRef}>
