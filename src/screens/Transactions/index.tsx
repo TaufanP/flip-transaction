@@ -2,6 +2,7 @@ import { CompositeNavigationProp } from "@react-navigation/core";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { TextInput, View } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
+import SkeletonContent from "react-native-skeleton-content-nonexpo";
 import { Arrow, Search } from "../../../assets";
 import {
   Button,
@@ -21,16 +22,10 @@ import {
   spacing as sp,
   strings,
 } from "../../constants";
-import {
-  searchTransactions,
-  sortTransactions,
-  widthPercent,
-  winHeightPercent,
-} from "../../helper";
+import { searchTransactions, sortTransactions } from "../../helper";
 import { fetchTransactions } from "../../service";
 import { dummySorts } from "./dummy";
 import styles from "./styles";
-import SkeletonContent from "react-native-skeleton-content-nonexpo";
 
 interface TransactionsProps {
   navigation: CompositeNavigationProp<any, any>;
@@ -42,8 +37,8 @@ const Transactions = ({ navigation }: TransactionsProps) => {
   const popRef = useRef<FlyPopUpRef>();
   const isMounted = useRef<boolean>();
 
+  const [errorMsg, setErrorMsg] = useState<string>(strings.dataNotAvailable);
   const [isError, setIsError] = useState<boolean>(false);
-  const [errorMsg, setErrorMsg] = useState<string>("Data tidak tersedia");
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [keyword, setKeyword] = useState<string>("");
   const [selectedSort, setSelectedSort] = useState<SortProps>(
@@ -90,8 +85,8 @@ const Transactions = ({ navigation }: TransactionsProps) => {
 
   const ListEmptyComponent = (
     <View style={styles.empty}>
-      <TextItem type="b.16.text1.c">Data tidak ditemukan</TextItem>
-      <TextItem type="n.14.text1">Kamu bisa coba kata kunci lain</TextItem>
+      <TextItem type="b.16.text1.c">{strings.dataNotFound}</TextItem>
+      <TextItem type="n.14.text1">{strings.anotherKey}</TextItem>
     </View>
   );
 
@@ -123,6 +118,8 @@ const Transactions = ({ navigation }: TransactionsProps) => {
     </View>
   );
 
+  const showSort = () => popRef.current?.open();
+
   const sortPress = (sort: SortProps) => {
     setSelectedSort(sort);
     popRef.current?.close();
@@ -141,7 +138,7 @@ const Transactions = ({ navigation }: TransactionsProps) => {
     return (
       <Container>
         <View style={styles.empty}>
-          <TextItem type="b.16.text1.c">Terjadi kesalahan</TextItem>
+          <TextItem type="b.16.text1.c">{strings.wentWrong}</TextItem>
           <TextItem type="n.14.text1">{errorMsg}</TextItem>
         </View>
       </Container>
@@ -162,15 +159,12 @@ const Transactions = ({ navigation }: TransactionsProps) => {
               <Search fill={colors.text2} width={20} height={20} />
             </View>
             <TextInput
-              style={{ height: 48, flex: 1 }}
+              style={styles.input}
               placeholder={strings.findBy}
               onChangeText={setKeyword}
             />
             <Gap horizontal={sp.sm} />
-            <Button
-              style={styles.sortButton}
-              onPress={() => popRef.current?.open()}
-            >
+            <Button style={styles.sortButton} onPress={showSort}>
               <TextItem type="b.14.primary1">{selectedSort?.label}</TextItem>
               <Gap horizontal={sp.xs} />
               <Arrow fill={colors.primary1} width={16} height={16} />

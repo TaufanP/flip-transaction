@@ -14,7 +14,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
     padding: sp.sm,
     borderRadius: 8,
-    // position: "absolute",
   },
   container: {
     backgroundColor: "#0005",
