@@ -2,13 +2,10 @@ import React from "react";
 import { View } from "react-native";
 import { ArrowTailed } from "../../../../assets";
 import { colors, defaultValue as dv, spacing as sp } from "../../../constants";
-import { currencyFormat } from "../../../helper";
+import { bankTextType, currencyFormat } from "../../../helper";
 import { dateFormater } from "../../../helper/dateFormat";
 import { Button, Gap, TextItem } from "../../atom";
 import styles from "./styles";
-
-const bankTextType = (code: string) =>
-  code?.length < 5 ? "b.16.text1.u" : "b.16.text1.c";
 
 const TransactionTile = ({
   sender = "",
