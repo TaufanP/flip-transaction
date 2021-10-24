@@ -1,4 +1,4 @@
-import FlyPopUp from "./FlyPopUp";
+// import FlyPopUp from "./FlyPopUp";
 import SemiRadio from "./SemiRadio";
 
-export { FlyPopUp, SemiRadio };
+export { /*FlyPopUp,*/ SemiRadio };

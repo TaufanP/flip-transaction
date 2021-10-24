@@ -6,7 +6,7 @@ import { Arrow, Search } from "../../../assets";
 import {
   Button,
   Container,
-  FlyPopUp,
+  // FlyPopUp,
   Gap,
   SemiRadio,
   TextItem,
@@ -59,8 +59,6 @@ const Transactions = ({ navigation }: TransactionsProps) => {
   }, [keyword, selectedSort, transactionsData]);
 
   const getTransactions = async () => {
-    navigation.navigate(pages.TransactionDetail);
-    return;
     try {
       const { data } = await fetchTransactions();
       if (!isMounted.current) {
@@ -145,7 +143,7 @@ const Transactions = ({ navigation }: TransactionsProps) => {
         renderItem={renderItem}
         showsVerticalScrollIndicator={false}
       />
-      <FlyPopUp ref={popRef}>
+      {/* <FlyPopUp ref={popRef}>
         {dummySorts.map((item) => (
           <SemiRadio
             key={`${item.id}`}
@@ -154,7 +152,7 @@ const Transactions = ({ navigation }: TransactionsProps) => {
             onPress={sortPress}
           />
         ))}
-      </FlyPopUp>
+      </FlyPopUp> */}
     </Container>
   );
 };

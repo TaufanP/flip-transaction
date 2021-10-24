@@ -13,6 +13,7 @@ const fetchTransactions = () => {
         error: null,
       });
     } catch (error) {
+      console.log({ error });
       rejected({
         data: null,
         isSuccess: false,
