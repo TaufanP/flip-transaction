@@ -17,13 +17,15 @@ const TransactionTile = ({
   amount,
   date,
   iSsuccess,
+  onPress,
+  id,
 }: TransactionTileProps) => {
   const s = styles({ iSsuccess });
   const statusLabel = iSsuccess ? dv.success : dv.checking;
   const statusLabelColor = iSsuccess ? "white" : "text1";
 
   return (
-    <Button>
+    <Button onPress={() => onPress(id)}>
       <View style={s.container}>
         <View style={s.child}>
           <View style={s.indicator}></View>

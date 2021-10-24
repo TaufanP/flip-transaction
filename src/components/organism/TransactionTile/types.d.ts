@@ -5,4 +5,6 @@ interface TransactionTileProps {
   amount: number;
   date: string;
   iSsuccess: boolean;
+  onPress(id: string): void;
+  id: string;
 }

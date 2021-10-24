@@ -1,3 +1,4 @@
+import { CompositeNavigationProp } from "@react-navigation/core";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { TextInput, View } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
@@ -5,7 +6,7 @@ import { Arrow, Search } from "../../../assets";
 import {
   Button,
   Container,
-  FlyPopUp,
+  // FlyPopUp,
   Gap,
   SemiRadio,
   TextItem,
@@ -15,17 +16,22 @@ import { FlyPopUpRef } from "../../components/molecule/FlyPopUp/types";
 import {
   colors,
   defaultValue as dv,
+  pages,
   spacing as sp,
   strings,
 } from "../../constants";
-import { sortTransactions, searchTransactions } from "../../helper";
+import { searchTransactions, sortTransactions } from "../../helper";
 import { fetchTransactions } from "../../service";
 import { dummySorts } from "./dummy";
 import styles from "./styles";
 
+interface TransactionsProps {
+  navigation: CompositeNavigationProp<any, any>;
+}
+
 const HORIZONTAL_GAP = sp.xs;
 
-const Transactions = () => {
+const Transactions = ({ navigation }: TransactionsProps) => {
   const popRef = useRef<FlyPopUpRef>();
   const isMounted = useRef<boolean>();
 
@@ -52,11 +58,6 @@ const Transactions = () => {
     return sortedData;
   }, [keyword, selectedSort, transactionsData]);
 
-  const sortPress = (sort: SortProps) => {
-    setSelectedSort(sort);
-    popRef.current?.close();
-  };
-
   const getTransactions = async () => {
     try {
       const { data } = await fetchTransactions();
@@ -71,9 +72,15 @@ const Transactions = () => {
 
   const keyExtractor = ({ id }: TransactionsDataProps) => `${id}`;
 
+  const onTransactionPress = (id: string) => {
+    navigation.navigate(pages.TransactionDetail, { id });
+  };
+
   const renderItem = ({ item }: { item: TransactionsDataProps }) => (
     <View>
       <TransactionTile
+        onPress={onTransactionPress}
+        id={item?.id}
         amount={item?.amount}
         beneficiary={item?.beneficiary_bank}
         name={item?.beneficiary_name}
@@ -88,6 +95,11 @@ const Transactions = () => {
       <Gap vertical={sp.xs} />
     </View>
   );
+
+  const sortPress = (sort: SortProps) => {
+    setSelectedSort(sort);
+    popRef.current?.close();
+  };
 
   useEffect(() => {
     isMounted.current = true;
@@ -131,7 +143,7 @@ const Transactions = () => {
         renderItem={renderItem}
         showsVerticalScrollIndicator={false}
       />
-      <FlyPopUp ref={popRef}>
+      {/* <FlyPopUp ref={popRef}>
         {dummySorts.map((item) => (
           <SemiRadio
             key={`${item.id}`}
@@ -140,7 +152,7 @@ const Transactions = () => {
             onPress={sortPress}
           />
         ))}
-      </FlyPopUp>
+      </FlyPopUp> */}
     </Container>
   );
 };
