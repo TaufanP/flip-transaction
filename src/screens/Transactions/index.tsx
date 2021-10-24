@@ -77,7 +77,13 @@ const Transactions = ({ navigation }: TransactionsProps) => {
     navigation.navigate(pages.TransactionDetail, { ...transaction });
   };
 
-  const renderItem = ({ item }: { item: TransactionsDataProps }) => (
+  const renderItem = ({
+    item,
+    index,
+  }: {
+    item: TransactionsDataProps;
+    index: number;
+  }) => (
     <View>
       <TransactionTile
         onPress={onTransactionPress}
@@ -88,6 +94,7 @@ const Transactions = ({ navigation }: TransactionsProps) => {
         sender={item?.sender_bank}
         iSsuccess={item?.status === dv.transactionStatus.SUCCESS}
         date={item?.created_at}
+        index={index}
       />
       <Gap vertical={sp.xs} />
     </View>
