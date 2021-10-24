@@ -73,7 +73,7 @@ const Transactions = ({ navigation }: TransactionsProps) => {
   const keyExtractor = ({ id }: TransactionsDataProps) => `${id}`;
 
   const onTransactionPress = (id: string) => {
-    navigation.navigate(pages.TransactionDetail);
+    navigation.navigate(pages.TransactionDetail, { id });
   };
 
   const renderItem = ({ item }: { item: TransactionsDataProps }) => (
